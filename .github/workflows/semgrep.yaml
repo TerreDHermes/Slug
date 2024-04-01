@@ -1,0 +1,12 @@
+rules:
+  - id: unpack-without-symlink-validation
+    patterns:
+      - pattern: |
+          from CallExpr
+          where
+            exists(Ident fn, String name |
+              fn.getName() = "Unpack" and
+              fn.getScope().lookup(name) = fn and
+              call.getArguments().get(1) instanceof Ident
+            )
+          select CallExpr, "Possible use of unpacking archive function without symlink validation"
